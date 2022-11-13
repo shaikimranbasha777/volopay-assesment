@@ -10,6 +10,7 @@ import {CgSortAz} from 'react-icons/cg'
 
 import Header from '../Header'
 import TabItem from '../TabItem'
+import VirtualCard from '../VirtualCard'
 
 import './index.css'
 
@@ -19,9 +20,48 @@ const tabsList = [
   {tabId: 'BLOCkED', displayText: 'Blocked'},
 ]
 
+const data = [
+  {
+    name: 'Minmax',
+    budgetName: 'Software Subscription',
+    subscriber: 'Imran',
+    ownerId: 1,
+    spent: {
+      value: 100,
+      currency: 'SGD',
+    },
+    availableToSpend: {
+      value: 1000,
+      currency: 'SGD',
+    },
+    expiry: '9 FEB',
+    limit: 100,
+    cardType: 'burner',
+    category: 'ALL',
+  },
+  {
+    name: 'Motion',
+    budgetName: 'Software Subscription',
+    subscriber: 'Mahaboob',
+    ownerId: 2,
+    spent: {
+      value: 0,
+      currency: 'SGD',
+    },
+    availableToSpend: {
+      value: 15,
+      currency: 'SGD',
+    },
+    expiry: '9 FEB',
+    limit: 5,
+    cardType: 'subscription',
+    category: 'YOUR',
+  },
+]
+
 class VirtualCards extends Component {
   state = {
-    activeTabId: tabsList[0].tabId,
+    activeTabId: tabsList[1].tabId,
     subscriptionInput: false,
     burnerInput: false,
   }
@@ -106,6 +146,11 @@ class VirtualCards extends Component {
               {this.renderFilterSection}
             </Popup>
           </div>
+        </div>
+        <div className="virtual-cards-list">
+          {data.map(eachCard => (
+            <VirtualCard key={eachCard.ownerId} cardDetails={eachCard} />
+          ))}
         </div>
       </div>
     )
