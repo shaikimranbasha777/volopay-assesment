@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import {Component} from 'react'
 
 import Popup from 'reactjs-popup'
+import InfiniteScroll from 'react-infinite-scroller'
 
 import 'reactjs-popup/dist/index.css'
 
@@ -20,50 +22,18 @@ const tabsList = [
   {tabId: 'BLOCkED', displayText: 'Blocked'},
 ]
 
-const data = [
-  {
-    name: 'Minmax',
-    budgetName: 'Software Subscription',
-    subscriber: 'Imran',
-    ownerId: 1,
-    spent: {
-      value: 100,
-      currency: 'SGD',
-    },
-    availableToSpend: {
-      value: 1000,
-      currency: 'SGD',
-    },
-    expiry: '9 FEB',
-    limit: 100,
-    cardType: 'burner',
-    category: 'ALL',
-  },
-  {
-    name: 'Motion',
-    budgetName: 'Software Subscription',
-    subscriber: 'Mahaboob',
-    ownerId: 2,
-    spent: {
-      value: 0,
-      currency: 'SGD',
-    },
-    availableToSpend: {
-      value: 15,
-      currency: 'SGD',
-    },
-    expiry: '9 FEB',
-    limit: 5,
-    cardType: 'subscription',
-    category: 'YOUR',
-  },
-]
-
 class VirtualCards extends Component {
   state = {
     activeTabId: tabsList[1].tabId,
     subscriptionInput: false,
     burnerInput: false,
+    cardsList: [],
+    startIndex: 0,
+    endIndex: 10,
+  }
+
+  componentDidMount() {
+    this.getVirtualCardsData()
   }
 
   setActiveTabId = tabId => {
@@ -109,8 +79,39 @@ class VirtualCards extends Component {
     )
   }
 
+  getVirtualCardsData = async () => {
+    const response = await fetch(
+      'https://636e5755b567eed48ada91f0.mockapi.io/Cards',
+    )
+    const data = await response.json()
+    console.log(response)
+    console.log(data)
+
+    const formattedData = data.map(each => ({
+      id: each.id,
+      ownerId: each.owner_id,
+      name: each.name,
+      budgetName: each.budget_name,
+      subscriber: each.subscriber,
+      spent: each.spent,
+      availableToSpend: each.available_to_spend,
+      limit: each.limit,
+      status: each.status,
+      cardType: each.card_type,
+    }))
+    this.setState({cardsList: formattedData})
+  }
+
+  loadingCardsList = () => {
+    const {cardsList, startIndex, endIndex} = this.state
+
+    this.setState({cardsList: cardsList.slice(startIndex + 10, endIndex + 10)})
+  }
+
   render() {
-    const {activeTabId} = this.state
+    const {activeTabId, cardsList} = this.state
+
+    console.log(cardsList)
 
     return (
       <div className="virtual-cards-container">
@@ -147,10 +148,18 @@ class VirtualCards extends Component {
             </Popup>
           </div>
         </div>
-        <div className="virtual-cards-list">
-          {data.map(eachCard => (
-            <VirtualCard key={eachCard.ownerId} cardDetails={eachCard} />
-          ))}
+        <div>
+          <InfiniteScroll
+            dataLength={cardsList.length}
+            next={this.loadingCardsList}
+            hasMore
+            loader={<h4>Loading...</h4>}
+            className="virtual-cards-list"
+          >
+            {cardsList.map(eachCard => (
+              <VirtualCard key={eachCard.ownerId} cardDetails={eachCard} />
+            ))}
+          </InfiniteScroll>
         </div>
       </div>
     )
