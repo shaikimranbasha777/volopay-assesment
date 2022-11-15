@@ -9,7 +9,7 @@ const VirtualCard = props => {
   const {
     name,
     budgetName,
-    subscriber,
+    cardHolder,
     spent,
     availableToSpend,
     expiry,
@@ -23,7 +23,7 @@ const VirtualCard = props => {
         <div className="name-container">
           <h1 className="name-heading">{name}</h1>
           <p className="budget-name">
-            {subscriber} <GoPrimitiveDot /> {budgetName}
+            {cardHolder} <GoPrimitiveDot /> {budgetName}
           </p>
         </div>
         <div className="logo-container">

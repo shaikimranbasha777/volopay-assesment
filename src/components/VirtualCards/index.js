@@ -92,7 +92,7 @@ class VirtualCards extends Component {
       ownerId: each.owner_id,
       name: each.name,
       budgetName: each.budget_name,
-      subscriber: each.subscriber,
+      cardHolder: each.card_holder,
       spent: each.spent,
       availableToSpend: each.available_to_spend,
       limit: each.limit,
